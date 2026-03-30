@@ -1,0 +1,11 @@
+# Ignore VS Code settings
+.vscode/
+
+# Ignore Papyrus compile script
+Scripts/Source/User/compile.bat
+
+# Ignore compiled Papyrus output
+*.pex
+
+# Ignore mod meta file
+meta.ini
