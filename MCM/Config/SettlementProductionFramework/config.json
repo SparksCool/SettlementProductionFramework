@@ -1,0 +1,159 @@
+{
+  "modName": "SettlementProductionFramework",         
+  "displayName": "Settlement Production Framework",   
+  "minMcmVersion": 1,                 
+  "pluginRequirements": ["SettlementMenuManager.esp"],        
+  "content": [{
+      "text": "<p align='center'><font size='46'>Settlement Production Framework</font></p>",
+      "html": true,
+      "align": "center",
+      "type": "text"
+    }, {
+      "text": "<p align='center'><font size='26'>By SparksCool</font></p>",
+      "html": true,
+      "align": "top",
+      "type": "text"
+    }],                  
+  "pages": [{                         
+    "pageDisplayName": "Settings",   
+    "content":  [{
+      "text": "Change the settings below to customize the behavior of SPF.",
+      "type": "section"
+    },{
+      "text": "Cheats",
+      "type": "section"
+    },  {
+        "text": "Ignore Production Costs",
+        "type": "switcher",
+        "help": "When enabled, production will not consume any resources.",
+        "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|548"
+        }
+    }, {
+      "text": "Wage Mechanic",
+      "type": "section"
+    },  {
+        "text": "Enable Wages",
+        "type": "switcher",
+        "help": "When enabled, a daily input of caps will be consumed for manned production objects.",
+        "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|54A"
+        }
+    }, {
+        "text": "Wage Penalty",
+        "type": "switcher",
+        "help": "When this and wages are enabled, production will cease if wages are unfulfilled.",
+        "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|54B"
+        }
+    },  {
+        "text": "Charge wages directly from player",
+        "type": "switcher",
+        "help": "When this and wages are enabled, wages will be able to be charged directly from the player.",
+        "valueOptions": {
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|F99"
+        }
+    },
+    {
+        "text": "Daily Wage Amount",
+        "type": "slider",
+        "help": "Set the daily wage amount for manned production objects, if enabled.",
+        "valueOptions": {
+            "min": 1,
+            "max": 500,
+            "step": 1,
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|549"
+        }
+    },
+     {
+      "text": "Balancing",
+      "type": "section"
+     },     {
+        "text": "Tick Hours",
+        "type": "slider",
+        "help": "Ingame Hours per production tick. This can be lengthened to effectively reduce production and consumption, for less impact on game balance.",
+        "valueOptions": {
+            "min": 24.0,
+            "max": 168.0,
+            "step": 1.0,
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|667"
+        }
+    }
+     ]                  
+  },
+{
+  "pageDisplayName": "Tools",
+  "content": [
+    {
+      "text": "Gameplay Tools",
+      "type": "section"
+    },
+    {
+      "text": "Generate Production Report",
+      "type": "button",
+      "help": "Generates a report of all production objects in the current settlement. This may take a significant amount of time depending on how many objects you have, and will likely induce script lag while processing for the same reasons.",
+      "action": {
+        "type": "CallFunction",
+        "form": "SettlementProductionFramework.esp|53D",
+        "scriptName": "SPF_ProdMan",
+        "function": "GetProducerNames"
+      }
+    },
+    {
+      "text": "Deposit Caps to local Workshop",
+      "type": "button",
+      "help": "Deposits caps to the local workshop.",
+      "action": {
+        "type": "CallFunction",
+        "form": "SettlementProductionFramework.esp|53D",
+        "scriptName": "SPF_ProdMan",
+        "function": "donateCaps"
+      }
+    }, 
+    {
+        "text": "Deposit amount",
+        "type": "slider",
+        "help": "Set the deposit amount for the above function.",
+        "valueOptions": {
+            "min": 1,
+            "max": 10000,
+            "step": 1,
+            "sourceType": "GlobalValue",
+            "sourceForm": "SettlementProductionFramework.esp|F9A"
+        }
+    },
+    {
+      "text": "Debug Tools",
+      "type": "section"
+    },
+    {
+      "text": "Reload Objects",
+      "type": "button",
+      "help": "Reloads variables for all production objects, useful when updating or troubleshooting.",
+      "action": {
+        "type": "CallFunction",
+        "form": "SettlementProductionFramework.esp|53D",
+        "scriptName": "SPF_ProdMan",
+        "function": "reloadMod"
+      }
+    },
+    {
+      "text": "Reset Objects",
+      "type": "button",
+      "help": "Resets all production objects to their initial state. Helpful if reload objects doesn't solve your problem, but could cause issues. I recommend saving before using.",
+      "action": {
+        "type": "CallFunction",
+        "form": "SettlementProductionFramework.esp|53D",
+        "scriptName": "SPF_ProdMan",
+        "function": "fullReloadMod"
+      }
+    }
+  ]
+}]
+}

@@ -15,6 +15,7 @@ GlobalVariable Property WagePenalty Auto Const
 GlobalVariable Property Work24Hours Auto Const
 GlobalVariable Property ChargePlayerCaps Auto Const
 GlobalVariable Property CapsDonationAmount Auto Const
+GlobalVariable Property TickHoursOverride Auto
 
 EndGroup
 
@@ -320,6 +321,13 @@ Event OnTimerGameTime(Int aiTimerID)
     EndIf
 EndEvent
 
+Function UpdateTickTimer()
+    CancelTimerGameTime(_TickTimerID)
+    StartTimerGameTime(TickHoursOverride.GetValueInt(), _TickTimerID)
+    Debug.Trace(self + " SPF_ProdMan: UpdateTickTimer restarted timer with TickHoursOverride=" + TickHoursOverride.GetValueInt())
+    TickHours = TickHoursOverride.GetValueInt()
+EndFunction
+
 Function RunTick()
 
     now = Utility.GetCurrentGameTime()
@@ -353,6 +361,10 @@ Function RunTick()
     needsFullReload = False ; reset full reload flag
 
     SyncPersistentProducers() ; ensure the PersistentProducers alias is in sync with the ProducerList after any potential removals
+
+    if (TickHoursOverride != None && TickHours != TickHoursOverride.GetValueInt()) ; if these dont match then we need to update the tick timer to match the override value
+        UpdateTickTimer()
+    EndIf
 EndFunction
 
 Function SyncPersistentProducers()
