@@ -43,8 +43,14 @@ Event OnWorkshopObjectDestroyed(ObjectReference akReference)
 EndEvent
 
 Function ProductionFail() ; This function is called when production fails for normal reasons
+    Debug.Trace(self.getDisplayName() + " ProductionFail called.")
     if bOutputResource
-        Self.SetValue(ResourceAV, MinResourceCount)
+        Float currentValue = Self.GetValue(ResourceAV)
+        Float delta = MinResourceCount - currentValue
+        Self.ModValue(ResourceAV, delta)
+        Self.BlockActivation(True) ; block activation to prevent player from trying to use it when it doesn't have the required resource
+        Self.SetOpen(True) ; Game generators often spawn with "true" meaning ff, which is confusing, but we need to set this to true to turn it off
+        WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
     EndIf
 EndFunction
 
@@ -60,7 +66,7 @@ Function ProcessIfDue(SPF_ProdMan mgr)
     EndIf
 
     if mgr.needsFullReload
-        ; This process is probably computationally expensive, but its only for reloads so its probably accept
+        ; This process is probably computationally expensive, but its only for reloads so its probably acceptable
         ObjectReference baseObject = PlaceAtMe(self.GetBaseObject(), 1, False, True)
         SPF_ProdObj baseScript = baseObject as SPF_ProdObj
         ; Update variables to match base
@@ -158,7 +164,12 @@ Function ProcessIfDue(SPF_ProdMan mgr)
     mgr.AddOutputsTo(target, outForms, outCounts)
 
     if bOutputResource
-        Self.SetValue(ResourceAV, TargetResourceCount)
+        Float currentValue = Self.GetValue(ResourceAV)
+        Float delta = TargetResourceCount - currentValue
+        Self.ModValue(ResourceAV, delta)
+        Self.BlockActivation(True)
+        Self.SetOpen(False) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to false to turn it on
+        WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
     EndIf
 
     LastProcessedGameDay = now
