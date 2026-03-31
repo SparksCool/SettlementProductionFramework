@@ -103,6 +103,14 @@ Function ProcessIfDue(SPF_ProdMan mgr)
             Debug.Trace(self + " SPF_ProdObj: input mismatch; skipping.")
             Return
         EndIf
+
+        ; Apply consumption multiplier from the manager to inputs
+        Float multiplier = mgr.GetConsumptionMultiplier()
+        Int i = 0
+        While i < inCounts.Length
+            inCounts[i] = Math.Ceiling(inCounts[i] * multiplier) as Int
+            i += 1
+        EndWhile
     EndIf
 
     ; --- use cached output array ---
@@ -115,6 +123,14 @@ Function ProcessIfDue(SPF_ProdMan mgr)
         Debug.Trace(self + " SPF_ProdObj: output mismatch; skipping.")
         Return
     EndIf
+
+    ; Apply production multiplier from the manager to outputs
+    Float multiplier = mgr.GetProductionMultiplier()
+    Int i = 0
+    While i < outCounts.Length
+        outCounts[i] = Math.Ceiling(outCounts[i] * multiplier) as Int
+        i += 1
+    EndWhile
 
     if RequiresActor() && mgr.WagesEnabled.GetValue() > 0
         if !mgr.ConsumeCapsFromNetwork(owner, Math.Floor(mgr.WageAmount.GetValue())) && mgr.WagePenalty.GetValue() > 0

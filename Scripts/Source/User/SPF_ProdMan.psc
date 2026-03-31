@@ -15,7 +15,9 @@ GlobalVariable Property WagePenalty Auto Const
 GlobalVariable Property Work24Hours Auto Const
 GlobalVariable Property ChargePlayerCaps Auto Const
 GlobalVariable Property CapsDonationAmount Auto Const
-GlobalVariable Property TickHoursOverride Auto
+GlobalVariable Property TickHoursOverride Auto Const
+GlobalVariable Property ProductionMultiplierOverride Auto Const
+GlobalVariable Property ConsumptionMultiplierOverride Auto Const
 
 EndGroup
 
@@ -42,6 +44,10 @@ FormList Property ProducerList Auto
 FormList Property TempList Auto ; Temporary storage for producers when cleaning up
 
 Int Property _TickTimerID = 1001 Auto Const
+
+; Non property variables
+Float productionMultiplier = 1.0
+Float consumptionMultiplier = 1.0
 
 Function RegisterProducer(SPF_ProdObj obj)
     If obj == None
@@ -328,7 +334,29 @@ Function UpdateTickTimer()
     TickHours = TickHoursOverride.GetValueInt()
 EndFunction
 
+Function UpdateMultipliers()
+    if ProductionMultiplierOverride != None
+        productionMultiplier = ProductionMultiplierOverride.GetValue()
+    endif
+    if ConsumptionMultiplierOverride != None
+        consumptionMultiplier = ConsumptionMultiplierOverride.GetValue()
+    endif
+EndFunction
+
+Float Function GetProductionMultiplier()
+    Return productionMultiplier
+EndFunction
+
+Float Function GetConsumptionMultiplier()
+    Return consumptionMultiplier
+EndFunction
+
 Function RunTick()
+
+    ; Similar to the tickhours update, if these dont match then we need to update our multipliers for the next production tick
+    if ((ProductionMultiplierOverride != None && productionMultiplier != ProductionMultiplierOverride.GetValue()) || (ConsumptionMultiplierOverride != None && consumptionMultiplier != ConsumptionMultiplierOverride.GetValue()))
+        UpdateMultipliers()
+    EndIf
 
     now = Utility.GetCurrentGameTime()
 
@@ -783,7 +811,7 @@ string Function GetProducerNames()
                 If ff != None
                     fname = ff.GetName()
                 EndIf
-                prodLine = prodLine + outCountsAgg[oi2] + " " + fname
+                prodLine = prodLine + Math.Ceiling(outCountsAgg[oi2] * ProductionMultiplierOverride.GetValue()) as Int + " " + fname
                 If oi2 < outFormsAgg.Length - 1
                     prodLine = prodLine + ", "
                 EndIf
@@ -802,7 +830,7 @@ string Function GetProducerNames()
                 If ff2 != None
                     fname2 = ff2.GetName()
                 EndIf
-                consLine = consLine + inCountsAgg[ii2] + " " + fname2
+                consLine = consLine + Math.Ceiling(inCountsAgg[ii2] * ConsumptionMultiplierOverride.GetValue()) as Int + " " + fname2
                 If ii2 < inFormsAgg.Length - 1
                     consLine = consLine + ", "
                 EndIf
