@@ -45,11 +45,12 @@ EndEvent
 Function ProductionFail() ; This function is called when production fails for normal reasons
     Debug.Trace(self.getDisplayName() + " ProductionFail called.")
     if bOutputResource
-        Float currentValue = Self.GetValue(ResourceAV)
-        Float delta = MinResourceCount - currentValue
-        Self.ModValue(ResourceAV, delta)
+       ; Float currentValue = Self.GetValue(ResourceAV)
+       ; Float delta = MinResourceCount - currentValue
+       ; Self.ModValue(ResourceAV, delta)
+        Self.SetValue(ResourceAV, MinResourceCount)
         Self.BlockActivation(True) ; block activation to prevent player from trying to use it when it doesn't have the required resource
-        Self.SetOpen(True) ; Game generators often spawn with "true" meaning ff, which is confusing, but we need to set this to true to turn it off
+        Self.SetOpen(True) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to true to turn it off
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
     EndIf
 EndFunction
@@ -164,12 +165,15 @@ Function ProcessIfDue(SPF_ProdMan mgr)
     mgr.AddOutputsTo(target, outForms, outCounts)
 
     if bOutputResource
-        Float currentValue = Self.GetValue(ResourceAV)
-        Float delta = TargetResourceCount - currentValue
-        Self.ModValue(ResourceAV, delta)
-        Self.BlockActivation(True)
+      ;  Float currentValue = Self.GetValue(ResourceAV)
+      ;  Float delta = Math.Ceiling(TargetResourceCount * mgr.GetResourceProductionMultiplier()) - currentValue
+      ;  Self.ModValue(ResourceAV, delta)
+      ;  Self.BlockActivation(True)
+        Self.SetValue(ResourceAV, Math.Ceiling(TargetResourceCount * mgr.GetResourceProductionMultiplier()))
         Self.SetOpen(False) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to false to turn it on
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
+        GetOwningWorkshop().RecalculateWorkshopResources(true)
+        GetOwningWorkshop().RecalculateResources()
     EndIf
 
     LastProcessedGameDay = now

@@ -18,6 +18,7 @@ GlobalVariable Property CapsDonationAmount Auto Const
 GlobalVariable Property TickHoursOverride Auto Const
 GlobalVariable Property ProductionMultiplierOverride Auto Const
 GlobalVariable Property ConsumptionMultiplierOverride Auto Const
+GlobalVariable Property ResourceProductionMultiplierOverride Auto Const
 
 EndGroup
 
@@ -48,6 +49,7 @@ Int Property _TickTimerID = 1001 Auto Const
 ; Non property variables
 Float productionMultiplier = 1.0
 Float consumptionMultiplier = 1.0
+Float resourceProductionMultiplier = 1.0
 
 Function RegisterProducer(SPF_ProdObj obj)
     If obj == None
@@ -341,6 +343,9 @@ Function UpdateMultipliers()
     if ConsumptionMultiplierOverride != None
         consumptionMultiplier = ConsumptionMultiplierOverride.GetValue()
     endif
+    if ResourceProductionMultiplierOverride != None
+        resourceProductionMultiplier = ResourceProductionMultiplierOverride.GetValue()
+    EndIf
 EndFunction
 
 Float Function GetProductionMultiplier()
@@ -351,10 +356,14 @@ Float Function GetConsumptionMultiplier()
     Return consumptionMultiplier
 EndFunction
 
+Float Function GetResourceProductionMultiplier()
+    Return resourceProductionMultiplier
+EndFunction
+
 Function RunTick()
 
     ; Similar to the tickhours update, if these dont match then we need to update our multipliers for the next production tick
-    if ((ProductionMultiplierOverride != None && productionMultiplier != ProductionMultiplierOverride.GetValue()) || (ConsumptionMultiplierOverride != None && consumptionMultiplier != ConsumptionMultiplierOverride.GetValue()))
+    if ((ProductionMultiplierOverride != None && productionMultiplier != ProductionMultiplierOverride.GetValue()) || (ConsumptionMultiplierOverride != None && consumptionMultiplier != ConsumptionMultiplierOverride.GetValue()) || (ResourceProductionMultiplierOverride != None && resourceProductionMultiplier != ResourceProductionMultiplierOverride.GetValue()))
         UpdateMultipliers()
     EndIf
 
