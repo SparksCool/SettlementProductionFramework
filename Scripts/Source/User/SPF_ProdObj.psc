@@ -52,6 +52,7 @@ Function ProductionFail() ; This function is called when production fails for no
         Self.BlockActivation(True) ; block activation to prevent player from trying to use it when it doesn't have the required resource
         Self.SetOpen(True) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to true to turn it off
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
+        GetOwningWorkshop().RecalculateWorkshopResources(true)
     EndIf
 EndFunction
 
@@ -173,7 +174,6 @@ Function ProcessIfDue(SPF_ProdMan mgr)
         Self.SetOpen(False) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to false to turn it on
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
         GetOwningWorkshop().RecalculateWorkshopResources(true)
-        GetOwningWorkshop().RecalculateResources()
     EndIf
 
     LastProcessedGameDay = now
