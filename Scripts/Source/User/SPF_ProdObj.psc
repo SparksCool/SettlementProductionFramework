@@ -56,10 +56,12 @@ Function ProductionFail() ; This function is called when production fails for no
 
          ; Handle if this is a workshopactor, e.g like a turret
         WorkshopObjectActorScript actorscript = (self as ObjectReference) as WorkshopObjectActorScript
+        if actorscript != None
             actorscript.HandleDeath(); will "Kill" the turret if the resource is depleted, maybe could be handled better in the future but this is probably good enough for now
             (actorscript as Actor).Kill()
             Debug.Trace(self + " SPF_ProdObj: Resource depleted, killing actor.")
         EndIf
+    EndIf
 EndFunction
 
 Function ProcessIfDue(SPF_ProdMan mgr)
