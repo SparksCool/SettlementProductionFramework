@@ -53,7 +53,13 @@ Function ProductionFail() ; This function is called when production fails for no
         Self.SetOpen(True) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to true to turn it off
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
         GetOwningWorkshop().RecalculateWorkshopResources(true)
-    EndIf
+
+         ; Handle if this is a workshopactor, e.g like a turret
+        WorkshopObjectActorScript actorscript = (self as ObjectReference) as WorkshopObjectActorScript
+            actorscript.HandleDeath(); will "Kill" the turret if the resource is depleted, maybe could be handled better in the future but this is probably good enough for now
+            (actorscript as Actor).Kill()
+            Debug.Trace(self + " SPF_ProdObj: Resource depleted, killing actor.")
+        EndIf
 EndFunction
 
 Function ProcessIfDue(SPF_ProdMan mgr)
@@ -174,6 +180,14 @@ Function ProcessIfDue(SPF_ProdMan mgr)
         Self.SetOpen(False) ; Game generators often spawn with "false" meaning on, which is confusing, but we need to set this to false to turn it on
         WorkshopParent.UpdateWorkshopRatingsForResourceObject(self, GetOwningWorkshop(), false)
         GetOwningWorkshop().RecalculateWorkshopResources(true)
+
+        ; Handle if this is a workshopactor, e.g like a turret
+        WorkshopObjectActorScript actorscript = (self as ObjectReference) as WorkshopObjectActorScript
+        if actorscript != None
+            actorscript.HandleRepair(); will "Kill" the turret if the resource is depleted, maybe could be handled better in the future but this is probably good enough for now
+            (actorscript as Actor).Resurrect()
+            Debug.Trace(self + " SPF_ProdObj: Resource returned, resurrecting actor.")
+        EndIf
     EndIf
 
     LastProcessedGameDay = now
